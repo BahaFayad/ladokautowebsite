@@ -1,7 +1,3 @@
-import { createClient } from 'npm:@supabase/supabase-js@2'
-// Create a single supabase client for interacting with your database
-const supabase = createClient('https://xyzcompany.supabase.co', 'publishable-or-anon-key')
-
 let submitBtn = document.querySelector("#submit-btn")
 if (submitBtn != null) {
     submitBtn.addEventListener("click", () => {
@@ -20,11 +16,9 @@ if (submitBtn != null) {
         else{
             emailErrorParagraf.innerHTML = ""
             authenticationFeedbackEl.innerHTML = "Trying to Sign up, please wait..."
+            
         }
 
     })
 
 }
-
-
-
