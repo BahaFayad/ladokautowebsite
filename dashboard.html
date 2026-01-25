@@ -1,1 +1,77 @@
-visar kurser samt dess individuella inställningar och status.
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LadokAuto</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Welcome to Ladok Auto!</h1>
+    </header>
+
+    <nav>
+        <a href="/">LadokAuto</a>
+        <ul>
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./about.html">About</a></li>
+            <li><a onclick="SignOut()" href="./index.html">SignOut</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <!-- Using a form makes Enter key work and is more accessible -->
+        <div class="dashboard-wrapper">
+            <div class="introduction">
+                <h1>My Courses</h1>
+                <p>Cached course data from Ladok.</p>
+            </div>
+            <div class="search-and-save-wrapper">
+            </div>
+            <div class="general-settings">
+                <div class="setting-wrapper">
+                    <h3>Auto-register all available examinations</h3>
+                    <p>Toggle auto-registration for all examinaitons.</p>
+                    <input type="checkbox">
+                </div>
+                <div class="setting-wrapper">
+                    <h3>Reminder before exam registration ends</h3>
+                    <p>Toggle auto-reminder for all examinaitons.</p>
+                    <input type="checkbox">
+                </div>
+            </div>
+            <table id="courses-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>status</th>
+                        <th>Registration start</th>
+                        <th>Reminder</th>
+                        <th>Auto-Registration</th>
+                    </tr>
+                </thead>
+
+                <tbody id="courses-table-body">
+                    <!-- JS will insert rows here -->
+                    <!-- <tr id="course-1">
+                        <td>Applied CAD - MTA103</td>
+                        <td>Registered</td>
+                        <td>2026-2-24</td>
+                        <td><input type="checkbox"></td>
+                        <td><input type="checkbox"></td>
+                    </tr> -->
+                </tbody>
+            </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ladok Auto</p>
+    </footer>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

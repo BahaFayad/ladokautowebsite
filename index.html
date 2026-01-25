@@ -20,16 +20,28 @@
             <li><a href="">About</a></li>
     </nav>
     <main>
-        <section class="Authentication-wrapper"> 
-            <label for="email">MDU email:</label>
-            <input type="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se">
-            <label for="password">MDU password:</label>
-            <input type="password" name="password" id="input-password" placeholder="Your MDU password">
-            <button type="submit">Login</button>
-        </section>
+        <!-- Using a form makes Enter key work and is more accessible -->
+        <form class="Authentication-wrapper" id="auth-form" novalidate>
+            <label for="input-email">MDU email:</label>
+            <input type="email" autocomplete="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se"
+                required />
+            <p class="authentication-format-error-email"></p>
 
+            <!-- Rename this if it's NOT the user's MDU password -->
+            <label for="input-password">Password:</label>
+            <input type="password" name="password" autocomplete="current-password" id="input-password"
+                placeholder="Your password" minlength="4" required />
+            <p class="authentication-format-error-password"></p>
+
+            <button id="submit-btn" type="submit">Sign Up</button>
+            <p class="authentication-feedback-message" aria-live="polite"></p>
+        </form>
     </main>
-    <footer><p>&copy; 2026 Ladok Auto</p></footer>
+    <footer>
+        <p>&copy; 2026 Ladok Auto</p>
+    </footer>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>
