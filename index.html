@@ -8,17 +8,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body data-page="signin">
     <header>
         <h1>Welcome to Ladok Auto!</h1>
     </header>
     <nav>
-        <a href="">LadokAuto</a>
-        <ul>
-            <li><a href="">Sign in</a></li>
-            <li><a href="">Sign up</a></li>
-            <li><a href="">About</a></li>
-    </nav>
+    <a href="/">LadokAuto</a>
+    <ul>
+      <li><a href="./index.html">Sign in</a></li>
+      <li><a href="./signup.html">Sign up</a></li>
+      <li><a href="./about.html">About</a></li>
+    </ul>
+  </nav>
     <main>
         <!-- Using a form makes Enter key work and is more accessible -->
         <form class="Authentication-wrapper" id="auth-form" novalidate>
@@ -33,7 +34,7 @@
                 placeholder="Your password" minlength="4" required />
             <p class="authentication-format-error-password"></p>
 
-            <button id="submit-btn" type="submit">Sign Up</button>
+            <button id="submit-btn" type="submit">Sign In</button>
             <p class="authentication-feedback-message" aria-live="polite"></p>
         </form>
     </main>

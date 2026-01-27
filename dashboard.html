@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body data-page="dashboard">
     <header>
         <h1>Welcome to Ladok Auto!</h1>
     </header>
@@ -17,8 +17,9 @@
         <a href="/">LadokAuto</a>
         <ul>
             <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./settings.html">Settings</a></li>
             <li><a href="./about.html">About</a></li>
-            <li><a onclick="SignOut()" href="./index.html">SignOut</a></li>
+            <li><button onclick="signOut()">Sign Out</button></li>
         </ul>
     </nav>
 
@@ -31,32 +32,45 @@
             </div>
             <div class="search-and-save-wrapper">
             </div>
-            <div class="general-settings">
-                <div class="setting-wrapper">
-                    <h3>Auto-register all available examinations</h3>
-                    <p>Toggle auto-registration for all examinaitons.</p>
-                    <input type="checkbox">
-                </div>
-                <div class="setting-wrapper">
-                    <h3>Reminder before exam registration ends</h3>
-                    <p>Toggle auto-reminder for all examinaitons.</p>
-                    <input type="checkbox">
-                </div>
+            <div class="setting-wrapper">
+                <h3>Auto-register all available examinations</h3>
+                <p>Toggle auto-registration for all examinaitons.</p>
+                <input type="checkbox" id="toggle-auto-examination-registration">
             </div>
             <table id="courses-table">
                 <thead>
                     <tr>
-                        <th>Course</th>
-                        <th>status</th>
-                        <th>Registration start</th>
-                        <th>Reminder</th>
-                        <th>Auto-Registration</th>
+                        <th>
+                            <h3>Courses</h3>
+                        </th>
+                        <th>
+                            <h3>Status</h3>
+                        </th>
+                        <th>
+                            <h3>Registration start</h3>
+                        </th>
+                        <th>
+                            <div class="reminder-col-wrapper">
+                                <h3>Reminder</h3>
+                                <label for="toggle-all-courses-reminder">Toggle all courses</label>
+                                <input type="checkbox" name="toggle-all-courses-reminder"
+                                    id="toggle-all-courses-reminder">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="reminder-col-wrapper">
+                                <h3>Auto-Registration</h3>
+                                <label for="toggle-all-courses">Toggle all courses</label>
+                                <input type="checkbox" name="toggle-all-courses"
+                                    id="toggle-all-courses-auto-registration">
+                            </div>
+                        </th>
                     </tr>
                 </thead>
 
                 <tbody id="courses-table-body">
                     <!-- JS will insert rows here -->
-                    <!-- <tr id="course-1">
+                    <!-- <tr id="course-0">
                         <td>Applied CAD - MTA103</td>
                         <td>Registered</td>
                         <td>2026-2-24</td>
@@ -65,6 +79,8 @@
                     </tr> -->
                 </tbody>
             </table>
+            <button id="save-courses-settings-changes">Save Changes</button>
+            <p class="save-changes-feedback-paragraf"></p>
     </main>
 
     <footer>

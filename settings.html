@@ -1,1 +1,78 @@
-general settings here innit.
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LadokAuto</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body data-page="settings">
+    <header>
+        <h1>Welcome to Ladok Auto!</h1>
+    </header>
+
+    <nav>
+        <a href="/">LadokAuto</a>
+        <ul>
+            <li><a href="./dashboard.html">Dashboard</a></li>
+            <li><a href="./settings.html">Settings</a></li>
+            <li><a href="./about.html">About</a></li>
+            <li><button onclick="signOut()">Sign Out</button></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="settings-wrapper">
+            <h1>Settings</h1>
+            <p>Preferences and account controls.</p>
+            <p class="error-paragraf"></p>
+            <div class="setting-wrapper">
+                <h3>Reminder before course/examination registration ends</h3>
+                <label for="toggle-auto-course-and-examination-reminder">Toggle course/examination reminder before
+                    Registration ends</label>
+                <input type="checkbox" name="toggle-auto-course-and-examination-reminder"
+                    id="toggle-auto-course-and-examination-reminder">
+            </div>
+            <div class="early-registration-reminder-setting-wrapper">
+                <h3>How early before registration ends do you want to be reminded?</h3>
+                <label for="days-ammount">Ammount of Days before Registration Ends:</label>
+                <select id="days-ammount" name="days-ammount">
+                    <option value="1">1 Days</option>
+                    <option value="2">2 Days</option>
+                    <option value="3">3 Days</option>
+                    <option value="4">4 Days</option>
+                    <option value="5">5 Days</option>
+                    <option value="6">6 Days</option>
+                    <option value="7">7 Days</option>
+                    <option value="-1">Maximum (Registration start date)</option>
+                </select>
+                <p>(Discord required for reminder settings)</p>
+                <button id="save-changes-btn">Save Changes</button>
+                <p class="save-feedback-paragraf"></p>
+            </div>
+            <div class="discord-setting-wrapper">
+                <h3>Discord Account Link</h3>
+                <p id="discord-account-id">Discord id:</p>
+                <p id="discord-account-link-status">Discord Linked: Null</p>
+                <button id="change-discord-account-btn">Link new discord account</button>
+
+            </div>
+            <div class="account-deletion-zone-wrapper">
+                <h3>DangerZone</h3>
+                <button>Delete your LadokAuto account</button>
+                <p>Warning! This action will result in an irreversible operation.</p>
+                <p>You can always comeback and create an account but your settings will be removed</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Ladok Auto</p>
+    </footer>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

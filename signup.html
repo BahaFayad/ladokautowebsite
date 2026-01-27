@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,7 +8,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body data-page="signup">
   <header>
     <h1>Welcome to Ladok Auto!</h1>
   </header>
@@ -24,39 +25,40 @@
   <main>
     <!-- Using a form makes Enter key work and is more accessible -->
     <form class="Authentication-wrapper" id="auth-form" novalidate>
+
       <label for="input-email">MDU email:</label>
-      <input
-        type="email"
-        autocomplete="email"
-        name="email"
-        id="input-email"
-        placeholder="ABC25001@student.mdu.se"
-        required
-      />
+      <input type="email" autocomplete="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se"
+        required />
       <p class="authentication-format-error-email"></p>
 
-      <!-- Rename this if it's NOT the user's MDU password -->
       <label for="input-password">Password:</label>
-      <input
-        type="password"
-        name="password"
-        autocomplete="current-password"
-        id="input-password"
-        placeholder="Your password"
-        minlength="4"
-        required
-      />
+      <input type="password" name="password" autocomplete="current-password" id="input-password"
+        placeholder="Your password" minlength="4" required />
       <p class="authentication-format-error-password"></p>
 
+      <p>Please join the discord server before signing up: <a target="_blank" href="https://discord.gg/67vRaEtJhD">Join Server</a></p>
+      <label for="discord-username-input">Discord username(Not Display Name):</label>
+      <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
+      <button id="send-code-btn" type="button">Send Code</button>
+      <p class="authentication-format-error-discordid"></p>
+      
+      <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
+      <input type="text" name="discord-username" id="discord-verfication-code-input" placeholder="Ex: W8ed2" />
+      <button id="verify-code-btn" type="button">Verify Code</button>
+      <p class="authentication-format-error-discordid-verfication"></p>
+      <p>Please be patient registration takes long time (Est. 30 seconds)</p>
       <button id="submit-btn" type="submit">Sign Up</button>
       <p class="authentication-feedback-message" aria-live="polite"></p>
     </form>
   </main>
 
-  <footer><p>&copy; 2026 Ladok Auto</p></footer>
+  <footer>
+    <p>&copy; 2026 Ladok Auto</p>
+  </footer>
 
   <!-- supabase must load before app.js since you use global `supabase` -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
