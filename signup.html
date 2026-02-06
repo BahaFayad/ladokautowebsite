@@ -1,64 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>LadokAuto</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
 <body data-page="signup">
   <header>
-    <h1>Welcome to Ladok Auto!</h1>
+    <div class="container">
+      <h1>Welcome to Ladok Auto!</h1>
+    </div>
   </header>
 
   <nav>
-    <a href="/">LadokAuto</a>
-    <ul>
-      <li><a href="./index.html">Sign in</a></li>
-      <li><a href="./signup.html">Sign up</a></li>
-      <li><a href="./about.html">About</a></li>
-    </ul>
+    <div class="container">
+      <div class="brand">
+        <a class="brand-link" href="./dashboard.html" aria-label="Go to dashboard">
+          <span class="logo-slot" aria-hidden="true"></span>
+          <span class="brand-name">LadokAuto</span>
+        </a>
+      </div>
+
+<div class="nav-links" id="primary-nav">
+        <ul>
+          <li><a class="navlink" href="./index.html"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i><span>Sign in</span></a></li>
+          <li><a class="navlink" href="./signup.html"><i class="bi bi-person-plus" aria-hidden="true"></i><span>Sign up</span></a></li>
+          <li><a class="navlink" href="./about.html"><i class="bi bi-info-circle" aria-hidden="true"></i><span>About</span></a></li>
+        </ul>
+      </div>
+    </div>
   </nav>
-
   <main>
-    <!-- Using a form makes Enter key work and is more accessible -->
-    <form class="Authentication-wrapper" id="auth-form" novalidate>
+    <div class="container">
+      <div class="card page-card" style="max-width: 560px; margin: 0 auto;">
+        <div class="page-header">
+          <h1>Sign Up</h1>
+        </div>
 
-      <label for="input-email">MDU email:</label>
-      <input type="email" autocomplete="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se"
-        required />
-      <p class="authentication-format-error-email"></p>
+        <div id="discord-required-callout" class="callout callout-warn">
+          <i class="bi bi-discord" aria-hidden="true"></i>
+          <div>
+            <p><strong>Discord is required</strong> to receive reminders and auto-registration notifications.</p>
+            <p>Create a Discord account, join the server, and verify your username below before you can use reminder features.</p>
+          </div>
+        </div>
 
-      <label for="input-password">Password:</label>
-      <input type="password" name="password" autocomplete="current-password" id="input-password"
-        placeholder="Your password" minlength="4" required />
-      <p class="authentication-format-error-password"></p>
+        <form class="Authentication-wrapper" id="auth-form" novalidate>
+          <label for="input-email">MDU email:</label>
+          <input type="email" autocomplete="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se" required />
+          <p class="authentication-format-error-email"></p>
 
-      <p>Please join the discord server before signing up: <a target="_blank" href="https://discord.gg/67vRaEtJhD">Join Server</a></p>
-      <label for="discord-username-input">Discord username(Not Display Name):</label>
-      <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
-      <button id="send-code-btn" type="button">Send Code</button>
-      <p class="authentication-format-error-discordid"></p>
-      
-      <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
-      <input type="text" name="discord-username" id="discord-verfication-code-input" placeholder="Ex: W8ed2" />
-      <button id="verify-code-btn" type="button">Verify Code</button>
-      <p class="authentication-format-error-discordid-verfication"></p>
-      <p>Please be patient registration takes long time (Est. 30 seconds)</p>
-      <button id="submit-btn" type="submit">Sign Up</button>
-      <p class="authentication-feedback-message" aria-live="polite"></p>
-    </form>
+          <label for="input-password">Password:</label>
+          <input type="password" name="password" autocomplete="current-password" id="input-password" placeholder="Your password" minlength="4" required />
+          <p class="authentication-format-error-password"></p>
+
+          <p>Please join the discord server before signing up: <a target="_blank" href="https://discord.gg/67vRaEtJhD" class="link-button link-discord"><i class="bi bi-discord" aria-hidden="true"></i><span>Join Server</span></a></p>
+          <label for="discord-username-input">Discord username(Not Display Name):</label>
+          <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
+          <button id="send-code-btn" type="button"><i class="bi bi-send" aria-hidden="true"></i><span>Send Code</span></button>
+          <p class="authentication-format-error-discordid"></p>
+
+          <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
+          <input type="text" name="discord-username" id="discord-verfication-code-input" placeholder="Ex: W8ed2" />
+          <button id="verify-code-btn" type="button"><i class="bi bi-shield-check" aria-hidden="true"></i><span>Verify Code</span></button>
+          <p class="authentication-format-error-discordid-verfication"></p>
+
+          <p>Please be patient registration takes long time (Est. 30 seconds)</p>
+          <button id="submit-btn" class="btn-primary" type="submit"><i class="bi bi-person-check" aria-hidden="true"></i><span>Sign Up</span></button>
+          <p class="authentication-feedback-message" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
   </main>
 
   <footer>
-    <p>&copy; 2026 Ladok Auto</p>
+    <div class="container">
+      <p>&copy; 2026 Ladok Auto</p>
+    </div>
   </footer>
 
-  <!-- supabase must load before app.js since you use global `supabase` -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
+  <script src="site-ui.js"></script>
 </body>
-
 </html>

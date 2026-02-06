@@ -1,0 +1,849 @@
+/* LadokAuto - Global styles (responsive, mobile-first) */
+
+/* --- Base / reset --- */
+:root{
+  --bg: #0b1220;
+  --panel: rgba(255,255,255,0.06);
+  --panel-2: rgba(255,255,255,0.08);
+  --border: rgba(255,255,255,0.12);
+  --border-2: rgba(255,255,255,0.18);
+  --text: rgba(255,255,255,0.92);
+  --muted: rgba(255,255,255,0.70);
+  --muted-2: rgba(255,255,255,0.55);
+
+  --accent: #49f6b8;      /* mint */
+  --accent-2: #1bd39a;
+  --accent-ink: #07140f;
+
+  --danger: #ff4d4f;
+  --danger-bg: rgba(255,77,79,0.12);
+  --warn: #ffcc66;
+  --warn-bg: rgba(255,204,102,0.12);
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  --radius: 16px;
+  --radius-sm: 12px;
+
+  --container: 1040px;
+  --font: system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+*{ box-sizing: border-box; }
+html, body{
+  margin:0;
+  padding:0;
+  background: radial-gradient(1200px 700px at 20% -10%, rgba(73,246,184,0.16), transparent 45%),
+              radial-gradient(900px 600px at 90% 10%, rgba(27,211,154,0.10), transparent 40%),
+              var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Remove the mobile "tap highlight" and accidental text selection */
+a, button, label, input, select, textarea, .navlink, .brand-link{
+  -webkit-tap-highlight-color: transparent;
+}
+button, .navlink, .brand-link, .link-button{ user-select: none; }
+::selection{ background: rgba(73,246,184,0.25); }
+
+img{ max-width:100%; display:block; }
+
+.container{
+  width: min(var(--container), calc(100% - 28px));
+  margin: 0 auto;
+}
+
+/* --- Header / nav --- */
+header{
+  position: sticky;
+  top:0;
+  z-index: 50;
+  background: linear-gradient(to bottom, rgba(10,18,32,0.95), rgba(10,18,32,0.65));
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+}
+header.is-scrolled{
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+  border-bottom-color: rgba(255,255,255,0.12);
+}
+header .container{
+  padding: 14px 0 10px;
+}
+header h1{
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+  color: rgba(255,255,255,0.92);
+}
+
+nav{
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+nav .container{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+.brand-link{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  text-decoration:none;
+  color: var(--text);
+}
+.logo-slot{
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background:
+    radial-gradient(12px 12px at 35% 35%, rgba(255,255,255,0.25), transparent 60%),
+    linear-gradient(135deg, rgba(73,246,184,0.85), rgba(27,211,154,0.55));
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+}
+.brand-name{
+  font-weight: 650;
+  letter-spacing: 0.3px;
+}
+
+.nav-toggle{ display:none !important; } /* user requested: no Menu button */
+.nav-links{
+  margin-left: auto;
+  flex: 1 1 520px;
+}
+.nav-links ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+  display:flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.nav-links a.navlink,
+.nav-links button{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-decoration:none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255,255,255,0.88);
+  cursor:pointer;
+  font: inherit;
+}
+.nav-links a.navlink:hover,
+.nav-links button:hover{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.10);
+}
+.nav-links a.navlink:focus-visible,
+.nav-links button:focus-visible{
+  outline: 3px solid rgba(73,246,184,0.35);
+  outline-offset: 2px;
+}
+
+/* --- Main layout --- */
+main .container{
+  padding: 18px 0 24px;
+}
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.06));
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.page-card{
+  padding: 16px;
+}
+.page-header{
+  display:flex;
+  align-items:flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  padding-bottom: 10px;
+  margin-bottom: 14px;
+}
+.page-header h1{
+  margin:0;
+  font-size: 22px;
+}
+p{ color: rgba(255,255,255,0.85); }
+
+/* --- Buttons / controls --- */
+button, .btn, .btn-primary, .btn-danger{
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  border-radius: 14px;
+  padding: 10px 12px;
+  font: inherit;
+  cursor: pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 8px;
+  min-height: 44px; /* mobile touch size */
+}
+button:hover, .btn:hover{
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.20);
+}
+button:disabled, .btn:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-primary{
+  background: linear-gradient(135deg, rgba(73,246,184,0.90), rgba(27,211,154,0.75));
+  color: var(--accent-ink);
+  border-color: rgba(255,255,255,0.10);
+  font-weight: 650;
+}
+.btn-primary:hover{
+  filter: brightness(1.03);
+}
+.btn-danger{
+  background: rgba(255,77,79,0.14);
+  border-color: rgba(255,77,79,0.45);
+  color: rgba(255,255,255,0.95);
+}
+.btn-danger:hover{
+  background: rgba(255,77,79,0.20);
+  border-color: rgba(255,77,79,0.60);
+}
+button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible{
+  outline: 3px solid rgba(73,246,184,0.35);
+  outline-offset: 2px;
+}
+
+/* Inputs */
+input[type="email"], input[type="password"], input[type="text"], input[type="search"], select{
+  width:100%;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.92);
+  padding: 12px 12px;
+  min-height: 44px;
+  font: inherit;
+}
+
+/* Helps native dropdown menus render with correct colors in dark UIs */
+select{
+  color-scheme: dark;
+}
+select option{
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+input::placeholder{ color: rgba(255,255,255,0.55); }
+label{ color: rgba(255,255,255,0.86); }
+
+/* Link buttons (e.g., Join Server) */
+.link-button{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+  text-decoration:none;
+  min-height: 44px;
+}
+.link-button:hover{
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.22);
+}
+.link-discord{
+  background: rgba(88,101,242,0.14);
+  border-color: rgba(88,101,242,0.45);
+}
+.link-discord:hover{
+  background: rgba(88,101,242,0.20);
+  border-color: rgba(88,101,242,0.60);
+}
+
+/* Callouts */
+.callout{
+  display:flex;
+  align-items:flex-start;
+  gap: 10px;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.92);
+}
+.callout i{ margin-top: 2px; opacity: 0.95; }
+.callout-danger{
+  border-color: rgba(255,77,79,0.45);
+  background: var(--danger-bg);
+}
+.callout-warn{
+  border-color: rgba(255,204,102,0.45);
+  background: var(--warn-bg);
+}
+[hidden] {
+  display: none !important;
+}
+
+
+/* Hide native clear button inside search inputs (keep our explicit clear button) */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration{
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+/* --- Dashboard --- */
+.dashboard-wrapper{
+  padding: 16px;
+}
+.introduction{
+  display:flex;
+  align-items:flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.10);
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+.introduction h1{
+  margin:0;
+  font-size: 24px;
+}
+.introduction p{ margin:0; color: rgba(255,255,255,0.72); }
+
+.search-and-save-wrapper{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items:center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.searchbar{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  flex: 1 1 420px;
+  padding: 10px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+}
+.searchbar input{
+  border: none;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}
+.searchbar input:focus-visible{ outline: none; }
+.searchbar-icon{
+  opacity: 0.85;
+  display:inline-flex;
+}
+#course-search-clear{
+  padding: 10px 12px;
+}
+.smallmeta{
+  color: rgba(255,255,255,0.72);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.setting-wrapper{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px;
+  margin: 12px 0;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+.setting-wrapper h3{ margin:0 0 4px; font-size: 16px; }
+.setting-wrapper p{ margin:0; color: rgba(255,255,255,0.70); }
+
+/* Table card */
+.table-card{
+  margin-top: 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+.table-scroller{ overflow-x:auto; }
+table{
+  width:100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+thead th{
+  text-align:left;
+  font-weight: 650;
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  position: sticky;
+  top: 0; /* sticks inside scroller */
+  z-index: 1;
+}
+thead h3{
+  margin:0;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+  color: rgba(255,255,255,0.86);
+}
+.reminder-col-wrapper{
+  display:flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reminder-col-wrapper label{
+  color: rgba(255,255,255,0.70);
+  font-size: 13px;
+}
+tbody td{
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  vertical-align: middle;
+}
+/* Desktop column separators */
+@media (min-width: 761px){
+  thead th, tbody td{
+    border-right: 1px solid rgba(255,255,255,0.10);
+  }
+  thead th:last-child, tbody td:last-child{
+    border-right: none;
+  }
+}
+
+tbody tr:hover td{
+  background: rgba(255,255,255,0.03);
+}
+tbody tr.is-filtered-out{ display:none !important; }
+
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  font-weight: 650;
+  font-size: 12px;
+}
+.status-badge.is-yes{
+  border-color: rgba(73,246,184,0.40);
+  background: rgba(73,246,184,0.12);
+}
+.status-badge.is-no{
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Reminder warning: only reminder toggles that are OFF (and enabled)
+   (applies to the toggle track, not the whole cell) */
+input.course-reminder:not(:checked):not(:disabled){
+  background: rgba(255,77,79,0.24);
+  border-color: rgba(255,77,79,0.62);
+}
+
+/* Master toggles: visually distinct (applied via JS class) */
+input.master-toggle{
+  --toggle-w: 56px;
+  --toggle-h: 32px;
+  --toggle-pad: 4px;
+  --toggle-knob: 24px;
+
+  box-shadow: 0 0 0 3px rgba(73,246,184,0.12);
+  border-color: rgba(73,246,184,0.40);
+}
+@media (min-width: 900px){
+  input.master-toggle{
+    --toggle-w: 62px;
+    --toggle-h: 36px;
+    --toggle-pad: 4px;
+    --toggle-knob: 28px;
+  }
+}
+
+/* --- Custom toggle (checkbox) --- */
+input[type="checkbox"]{
+  -webkit-tap-highlight-color: transparent;
+
+  /* Sizing (override with CSS variables per context) */
+  --toggle-w: 44px;
+  --toggle-h: 26px;
+  --toggle-pad: 3px;
+  --toggle-knob: 18px;
+
+  width: var(--toggle-w);
+  height: var(--toggle-h);
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  outline: none;
+}
+input[type="checkbox"]:focus{
+  outline: none;
+  box-shadow: none;
+}
+input[type="checkbox"]::after{
+  content:"";
+  position:absolute;
+  left: var(--toggle-pad);
+  top: 50%;
+  width: var(--toggle-knob);
+  height: var(--toggle-knob);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.88);
+  transform: translate(0, -50%);
+  transition: transform 120ms ease, background 120ms ease;
+}
+input[type="checkbox"]:checked{
+  background: rgba(73,246,184,0.55);
+  border-color: rgba(73,246,184,0.65);
+}
+input[type="checkbox"]:checked::after{
+  transform: translate(calc(var(--toggle-w) - var(--toggle-knob) - (var(--toggle-pad) * 2)), -50%);
+  background: rgba(7,20,15,0.95);
+}
+input[type="checkbox"]:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Slightly larger on desktop */
+@media (min-width: 900px){
+  input[type="checkbox"]{
+    --toggle-w: 50px;
+    --toggle-h: 30px;
+    --toggle-pad: 4px;
+    --toggle-knob: 22px;
+  }
+}
+
+/* Actions bar */
+.actions-bar{
+  display:flex;
+  flex-wrap: wrap;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+.save-changes-feedback-paragraf{
+  margin: 0;
+  color: rgba(255,255,255,0.78);
+}
+
+/* --- Settings --- */
+.settings-wrapper{
+  padding: 16px;
+}
+.early-registration-reminder-setting-wrapper,
+.discord-setting-wrapper{
+  margin-top: 12px;
+  padding: 12px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+.discord-setting-wrapper button{ width: 100%; justify-content:center; }
+
+/* Danger Zone like GitHub */
+.account-deletion-zone-wrapper{
+  margin-top: 14px;
+  padding: 12px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,77,79,0.45);
+  background: var(--danger-bg);
+}
+.account-deletion-zone-wrapper h3{
+  margin: 0 0 10px;
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  color: rgba(255,255,255,0.92);
+}
+.account-deletion-zone-wrapper p{
+  margin: 6px 0 0;
+  color: rgba(255,255,255,0.80);
+}
+
+/* --- Auth forms --- */
+.Authentication-wrapper{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.Authentication-wrapper p{
+  margin: 4px 0 0;
+}
+.authentication-feedback-message{
+  min-height: 22px;
+}
+.authentication-format-error-email,
+.authentication-format-error-password,
+.authentication-format-error-discordid,
+.authentication-format-error-discordid-verfication,
+.error-paragraf{
+  color: rgba(255,77,79,0.95);
+  margin: 0;
+  min-height: 18px;
+}
+
+/* --- About / FAQ --- */
+.faq{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.faq-item{
+  padding: 12px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+.faq-q{
+  margin:0 0 6px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.92);
+}
+.faq-a{
+  margin:0;
+  color: rgba(255,255,255,0.82);
+}
+
+/* --- Footer --- */
+footer{
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+footer .container{
+  padding: 16px 0 26px;
+}
+footer p{
+  margin:0;
+  color: rgba(255,255,255,0.68);
+}
+
+/* --- Mobile dashboard table as cards (no horizontal scroll needed) --- */
+@media (max-width: 760px){
+  nav .container{ gap: 10px; }
+  .nav-links{ flex: 1 1 100%; }
+  .nav-links ul{ justify-content: flex-start; }
+
+  .table-scroller{ overflow-x: visible; }
+  table, thead, tbody, th, td, tr{ display:block; }
+  thead{ display:none; }
+  tbody tr{
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  tbody td{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 12px;
+  }
+  tbody td:last-child{ border-bottom: none; }
+  tbody td::before{
+    content: attr(data-label);
+    color: rgba(255,255,255,0.70);
+    font-size: 13px;
+    padding-right: 10px;
+  }
+  }
+
+
+
+/* Make "Join Server" links (inserted dynamically) look clickable */
+.discord-setting-wrapper a{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(88,101,242,0.45);
+  background: rgba(88,101,242,0.14);
+  color: rgba(255,255,255,0.92);
+  text-decoration:none;
+  min-height: 44px;
+}
+.discord-setting-wrapper a:hover{
+  background: rgba(88,101,242,0.20);
+  border-color: rgba(88,101,242,0.60);
+}
+
+/* --- Course sections (Dashboard) --- */
+.courses-sections{
+  display:flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.course-section{
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.03);
+  border-radius: 16px;
+  padding: 12px;
+}
+.course-section.is-registered{
+  border-color: rgba(73,246,184,0.22);
+  background: rgba(73,246,184,0.05);
+}
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.section-title{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.section-pill{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  font-weight: 750;
+  letter-spacing: 0.2px;
+}
+.section-pill--unreg{
+  border-color: rgba(255,204,102,0.40);
+  background: rgba(255,204,102,0.10);
+}
+.section-pill--reg{
+  border-color: rgba(73,246,184,0.40);
+  background: rgba(73,246,184,0.12);
+}
+.section-count{
+  color: rgba(255,255,255,0.74);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+/* Alternating row tint for readability */
+tbody tr.course-row:nth-child(even){
+  background: rgba(73,246,184,0.045);
+}
+tbody tr.course-row:hover td{
+  background: rgba(255,255,255,0.03);
+}
+
+/* Dashboard actions meta (unsaved + feedback) */
+.actions-meta{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+@media (min-width: 680px){
+  .actions-meta{
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+/* Inline actions (Settings) */
+.inline-actions{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+.inline-actions .btn-primary{
+  flex: 1 1 220px;
+}
+
+/* Unsaved indicator pill */
+.unsaved-indicator{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,204,102,0.45);
+  background: rgba(255,204,102,0.12);
+  color: rgba(255,255,255,0.92);
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  min-height: 40px;
+}
+.unsaved-indicator i{ opacity: 0.95; }
+
+/* Mobile enhancements */
+@media (max-width: 760px){
+  .course-section{
+    padding: 10px;
+  }
+  /* Larger toggles on small screens via variables (keeps knob centered) */
+  input[type="checkbox"]:not(.master-toggle){
+    --toggle-w: 58px;
+    --toggle-h: 36px;
+    --toggle-pad: 4px;
+    --toggle-knob: 28px;
+  }
+  input.master-toggle{
+    --toggle-w: 64px;
+    --toggle-h: 38px;
+    --toggle-pad: 4px;
+    --toggle-knob: 30px;
+  }
+  tbody tr.course-row:nth-child(even){
+    background: rgba(73,246,184,0.08);
+  }
+}
+
+.course-name-registered{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.course-name-registered .status-badge{
+  font-size: 12px;
+}

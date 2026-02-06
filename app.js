@@ -31,6 +31,15 @@ function setDisabled(el, disabled = true) {
   el.disabled = disabled;
 }
 
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 async function safeReadJson(response) {
   const raw = await response.text();
   if (!raw) return { ok: response.ok, data: null, raw: "" };
@@ -65,14 +74,19 @@ function utf8Base64ToJson(base64String) {
   return JSON.parse(text);
 }
 function collectCoursesFromTable(originalCourses) {
-  const rows = document.querySelectorAll("#courses-table-body tr");
+  const rows = document.querySelectorAll(
+    "#courses-table-body-unregistered tr[data-course-index], #courses-table-body tr[data-course-index]"
+  );
 
-  rows.forEach((row, i) => {
+  rows.forEach((row) => {
+    const idx = Number(row.getAttribute("data-course-index"));
+    if (!Number.isFinite(idx) || !originalCourses[idx]) return;
+
     const reminderCheckbox = row.querySelector(".course-reminder");
     const autoCheckbox = row.querySelector(".course-auto");
 
-    originalCourses[i].NotificationOn = reminderCheckbox.checked;
-    originalCourses[i].AutoRegistrationEnabled = autoCheckbox.checked;
+    if (reminderCheckbox) originalCourses[idx].NotificationOn = reminderCheckbox.checked;
+    if (autoCheckbox) originalCourses[idx].AutoRegistrationEnabled = autoCheckbox.checked;
   });
 
   return originalCourses;
@@ -320,14 +334,27 @@ async function handleSigninSubmit(e, elements) {
 }
 
 
+
+function isCourseRegistered(course) {
+  const v =
+    (course && (course.IsRegistered ?? course.isRegistered ?? course.Status ?? course.status)) ?? false;
+
+  if (typeof v === "boolean") return v;
+  if (typeof v === "number") return v === 1;
+  const s = String(v).trim().toLowerCase();
+  return s === "yes" || s === "true" || s === "registered";
+}
+
 // ---------- Dashboard loader ----------
 async function loadDashboard() {
-  const coursesTableBody = document.querySelector("#courses-table-body");
-  if (!coursesTableBody) return;
+  const unregBody = document.querySelector("#courses-table-body-unregistered") || document.querySelector("#courses-table-body");
+  const regBody = document.querySelector("#courses-table-body-registered");
+  if (!unregBody) return;
 
   const userData = await getUserData();
   if (!userData) {
-    coursesTableBody.innerHTML = `<tr><td colspan="5">Please log in to see your courses.</td></tr>`;
+    unregBody.innerHTML = `<tr class="table-empty-row"><td colspan="5">Please log in to see your courses.</td></tr>`;
+    if (regBody) regBody.innerHTML = `<tr class="table-empty-row"><td colspan="3">Please log in to see your courses.</td></tr>`;
     return;
   }
 
@@ -336,54 +363,150 @@ async function loadDashboard() {
     courses = utf8Base64ToJson(userData.json_courses_settings_binary);
   } catch (err) {
     console.error("Failed to parse courses:", err);
-    coursesTableBody.innerHTML = `<tr><td colspan="5">Failed to load courses.</td></tr>`;
+    unregBody.innerHTML = `<tr class="table-empty-row"><td colspan="5">Failed to load courses.</td></tr>`;
+    if (regBody) regBody.innerHTML = `<tr class="table-empty-row"><td colspan="3">Failed to load courses.</td></tr>`;
     return;
   }
 
   if (!Array.isArray(courses) || courses.length === 0) {
-    coursesTableBody.innerHTML = `<tr><td colspan="5">No courses found.</td></tr>`;
+    unregBody.innerHTML = `<tr class="table-empty-row"><td colspan="5">No courses found.</td></tr>`;
+    if (regBody) regBody.innerHTML = `<tr class="table-empty-row"><td colspan="3">No courses found.</td></tr>`;
     return;
   }
 
   // Global exam auto-registration toggle
-  const autoExaminationRegistrationInput =
-    document.querySelector("#toggle-auto-examination-registration");
-  autoExaminationRegistrationInput.checked = userData.auto_register_exams;
+  const autoExamsInput = document.querySelector("#toggle-auto-examination-registration");
+  if (autoExamsInput) autoExamsInput.checked = Boolean(userData.auto_register_exams);
 
   // ---------- Render courses ----------
-  coursesTableBody.innerHTML = "";
+  unregBody.innerHTML = "";
+  if (regBody) regBody.innerHTML = "";
 
   courses.forEach((course, i) => {
-    const checkedNotification = course.NotificationOn ? "checked" : "";
-    const checkedAuto = course.AutoRegistrationEnabled ? "checked" : "";
+    const registered = isCourseRegistered(course);
 
-    coursesTableBody.innerHTML += `
-      <tr id="course-${i}">
-        <td>${course.Name}</td>
-        <td>${course.IsRegistered ? "Yes" : "No"}</td>
-        <td>${course.RegistrationStart}</td>
-        <td><input type="checkbox" class="course-reminder" ${checkedNotification}></td>
-        <td><input type="checkbox" class="course-auto" ${checkedAuto}></td>
-      </tr>
-    `;
+    const name = escapeHtml(course.Name);
+    const start = escapeHtml(course.RegistrationStart);
+    const end = escapeHtml(course.RegistrationEnd);
+
+    if (!registered) {
+      const checkedNotification = course.NotificationOn ? "checked" : "";
+      const checkedAuto = course.AutoRegistrationEnabled ? "checked" : "";
+
+      unregBody.innerHTML += `
+        <tr class="course-row" data-course-index="${i}" id="course-${i}">
+          <td>${name}</td>
+          <td>${start}</td>
+          <td>${end}</td>
+          <td><input type="checkbox" class="course-reminder" ${checkedNotification}></td>
+          <td><input type="checkbox" class="course-auto" ${checkedAuto}></td>
+        </tr>
+      `;
+    } else if (regBody) {
+      regBody.innerHTML += `
+        <tr class="course-row" data-course-index="${i}" id="course-registered-${i}">
+          <td>
+            <div class="course-name-registered">
+              <span class="course-name-text">${name}</span>
+              <span class="status-badge is-yes"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Registered</span>
+            </div>
+          </td>
+          <td>${start}</td>
+          <td>${end}</td>
+        </tr>
+      `;
+    }
   });
 
-  // ---------- Toggle ALL reminders ----------
+  // ---------- Toggle ALL reminders (unregistered only) ----------
   const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
-  toggleAllReminders.onchange = (e) => {
-    document
-      .querySelectorAll(".course-reminder")
-      .forEach(cb => cb.checked = e.target.checked);
-  };
+  if (toggleAllReminders) {
+    toggleAllReminders.onchange = (e) => {
+      unregBody
+        .querySelectorAll(".course-reminder")
+        .forEach(cb => cb.checked = e.target.checked);
+      updateDashboardDirtyState();
+    };
+  }
 
-  // ---------- Toggle ALL auto-registrations ----------
+  // ---------- Toggle ALL auto-registrations (unregistered only) ----------
   const toggleAllAuto = document.querySelector("#toggle-all-courses-auto-registration");
-  toggleAllAuto.onchange = (e) => {
-    document
-      .querySelectorAll(".course-auto")
-      .forEach(cb => cb.checked = e.target.checked);
-  };
-  //saving changes
+  if (toggleAllAuto) {
+    toggleAllAuto.onchange = (e) => {
+      unregBody
+        .querySelectorAll(".course-auto")
+        .forEach(cb => cb.checked = e.target.checked);
+      updateDashboardDirtyState();
+    };
+  }
+
+  // ---------- Unsaved changes guard (Dashboard) ----------
+  const unsavedEl = document.querySelector("#dashboard-unsaved");
+  let baseline = null;
+
+  function captureDashboardBaseline() {
+    baseline = {
+      autoExams: autoExamsInput ? autoExamsInput.checked : false,
+      perCourse: new Map()
+    };
+    unregBody.querySelectorAll("tr[data-course-index]").forEach((row) => {
+      const idx = Number(row.getAttribute("data-course-index"));
+      if (!Number.isFinite(idx)) return;
+      baseline.perCourse.set(idx, {
+        reminder: !!row.querySelector(".course-reminder")?.checked,
+        auto: !!row.querySelector(".course-auto")?.checked
+      });
+    });
+  }
+
+  function computeDashboardDirty() {
+    if (!baseline) return false;
+    if (autoExamsInput && autoExamsInput.checked !== baseline.autoExams) return true;
+
+    let dirty = false;
+    unregBody.querySelectorAll("tr[data-course-index]").forEach((row) => {
+      if (dirty) return;
+      const idx = Number(row.getAttribute("data-course-index"));
+      const b = baseline.perCourse.get(idx);
+      if (!b) return;
+      const r = !!row.querySelector(".course-reminder")?.checked;
+      const a = !!row.querySelector(".course-auto")?.checked;
+      if (r !== b.reminder || a !== b.auto) dirty = true;
+    });
+    return dirty;
+  }
+
+  function setDashboardDirtyUI(isDirty) {
+    if (unsavedEl) unsavedEl.hidden = !isDirty;
+  }
+
+  function updateDashboardDirtyState() {
+    setDashboardDirtyUI(computeDashboardDirty());
+  }
+
+  captureDashboardBaseline();
+  updateDashboardDirtyState();
+
+  // Change listeners
+  unregBody.addEventListener("change", (e) => {
+    const t = e.target;
+    if (t && t.classList && (t.classList.contains("course-reminder") || t.classList.contains("course-auto"))) {
+      updateDashboardDirtyState();
+    }
+  });
+  if (autoExamsInput) autoExamsInput.addEventListener("change", updateDashboardDirtyState);
+
+  // beforeunload warning
+  if (!window.__ladokautoDashboardUnloadGuard) {
+    window.__ladokautoDashboardUnloadGuard = true;
+    window.addEventListener("beforeunload", (e) => {
+      if (!computeDashboardDirty()) return;
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  }
+
+  // ---------- Save changes ----------
   document.querySelector("#save-courses-settings-changes")
     .addEventListener("click", async () => {
       const feedbackEl = document.querySelector(".save-changes-feedback-paragraf");
@@ -411,7 +534,7 @@ async function loadDashboard() {
 
       // Global toggle
       const autoRegisterExams =
-        document.querySelector("#toggle-auto-examination-registration").checked;
+        document.querySelector("#toggle-auto-examination-registration")?.checked ?? false;
 
       // Save to Supabase
       const { error } = await supabaseClient
@@ -429,10 +552,14 @@ async function loadDashboard() {
       }
 
       feedbackEl.textContent = "Changes saved successfully ✅";
+      // Update baseline so "unsaved changes" clears correctly
+      captureDashboardBaseline();
+      updateDashboardDirtyState();
     });
 }
 
-// ---------- Settings loader ----------
+ // ---------- Settings loader ----------
+
 async function loadSettings() {
   const errorParagrafEl = document.querySelector(".error-paragraf");
   if (!errorParagrafEl) return;
@@ -463,6 +590,44 @@ async function loadSettings() {
       userData.early_register_reminder_days - 1;
   }
 
+
+  // ---------- Unsaved changes guard (Settings) ----------
+  const settingsUnsavedEl = document.querySelector("#settings-unsaved");
+  let settingsBaseline = null;
+
+  function captureSettingsBaseline() {
+    settingsBaseline = {
+      reminder: autoReminderInputEl.checked,
+      daysIndex: amountDaysReminderInputEl.selectedIndex
+    };
+  }
+
+  function computeSettingsDirty() {
+    if (!settingsBaseline) return false;
+    return (
+      autoReminderInputEl.checked !== settingsBaseline.reminder ||
+      amountDaysReminderInputEl.selectedIndex !== settingsBaseline.daysIndex
+    );
+  }
+
+  function updateSettingsDirtyUI() {
+    if (settingsUnsavedEl) settingsUnsavedEl.hidden = !computeSettingsDirty();
+  }
+
+  captureSettingsBaseline();
+  updateSettingsDirtyUI();
+
+  autoReminderInputEl.addEventListener("change", updateSettingsDirtyUI);
+  amountDaysReminderInputEl.addEventListener("change", updateSettingsDirtyUI);
+
+  if (!window.__ladokautoSettingsUnloadGuard) {
+    window.__ladokautoSettingsUnloadGuard = true;
+    window.addEventListener("beforeunload", (e) => {
+      if (!computeSettingsDirty()) return;
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  }
   // ===== UPDATE SETTINGS =====
   const saveChangesBtnEl =
     document.querySelector("#save-changes-btn");
@@ -488,6 +653,8 @@ async function loadSettings() {
         "Failed to save settings. Try again.";
     } else {
       saveFeedbackEl.textContent = "Settings saved successfully ✅";
+      if (typeof captureSettingsBaseline === "function") captureSettingsBaseline();
+      if (typeof updateSettingsDirtyUI === "function") updateSettingsDirtyUI();
     }
   });
   const { data, error } = await supabaseClient

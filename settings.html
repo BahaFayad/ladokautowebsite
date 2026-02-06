@@ -1,78 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LadokAuto</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LadokAuto</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
 <body data-page="settings">
-    <header>
-        <h1>Welcome to Ladok Auto!</h1>
-    </header>
+  <header>
+    <div class="container">
+      <h1>Welcome to Ladok Auto!</h1>
+    </div>
+  </header>
 
-    <nav>
-        <a href="/">LadokAuto</a>
+  <nav>
+    <div class="container">
+      <div class="brand">
+        <a class="brand-link" href="./dashboard.html" aria-label="Go to dashboard">
+          <span class="logo-slot" aria-hidden="true"></span>
+          <span class="brand-name">LadokAuto</span>
+        </a>
+      </div>
+
+<div class="nav-links" id="primary-nav">
         <ul>
-            <li><a href="./dashboard.html">Dashboard</a></li>
-            <li><a href="./settings.html">Settings</a></li>
-            <li><a href="./about.html">About</a></li>
-            <li><button onclick="signOut()">Sign Out</button></li>
+          <li><a class="navlink" href="./dashboard.html"><i class="bi bi-speedometer2" aria-hidden="true"></i><span>Dashboard</span></a></li>
+          <li><a class="navlink" href="./settings.html"><i class="bi bi-gear" aria-hidden="true"></i><span>Settings</span></a></li>
+          <li><a class="navlink" href="./about.html"><i class="bi bi-info-circle" aria-hidden="true"></i><span>About</span></a></li>
+          <li><button type="button" onclick="signOut()"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span>Sign Out</span></button></li>
         </ul>
-    </nav>
-
-    <main>
-        <div class="settings-wrapper">
-            <h1>Settings</h1>
-            <p>Preferences and account controls.</p>
-            <p class="error-paragraf"></p>
-            <div class="setting-wrapper">
-                <h3>Reminder before course/examination registration ends</h3>
-                <label for="toggle-auto-course-and-examination-reminder">Toggle course/examination reminder before
-                    Registration ends</label>
-                <input type="checkbox" name="toggle-auto-course-and-examination-reminder"
-                    id="toggle-auto-course-and-examination-reminder">
-            </div>
-            <div class="early-registration-reminder-setting-wrapper">
-                <h3>How early before registration ends do you want to be reminded?</h3>
-                <label for="days-ammount">Ammount of Days before Registration Ends:</label>
-                <select id="days-ammount" name="days-ammount">
-                    <option value="1">1 Days</option>
-                    <option value="2">2 Days</option>
-                    <option value="3">3 Days</option>
-                    <option value="4">4 Days</option>
-                    <option value="5">5 Days</option>
-                    <option value="6">6 Days</option>
-                    <option value="7">7 Days</option>
-                    <option value="-1">Maximum (Registration start date)</option>
-                </select>
-                <p>(Discord required for reminder settings)</p>
-                <button id="save-changes-btn">Save Changes</button>
-                <p class="save-feedback-paragraf"></p>
-            </div>
-            <div class="discord-setting-wrapper">
-                <h3>Discord Account Link</h3>
-                <p id="discord-account-id">Discord id:</p>
-                <p id="discord-account-link-status">Discord Linked: Null</p>
-                <button id="change-discord-account-btn">Link new discord account</button>
-
-            </div>
-            <div class="account-deletion-zone-wrapper">
-                <h3>DangerZone</h3>
-                <button>Delete your LadokAuto account</button>
-                <p>Warning! This action will result in an irreversible operation.</p>
-                <p>You can always comeback and create an account but your settings will be removed</p>
-            </div>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <div class="card settings-wrapper">
+        <div class="page-header">
+          <h1>Settings</h1>
         </div>
-    </main>
+        <p>Preferences and account controls.</p>
+        <p class="error-paragraf"></p>
 
-    <footer>
-        <p>&copy; 2026 Ladok Auto</p>
-    </footer>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="app.js"></script>
+        <div class="setting-wrapper">
+          <div>
+            <h3>Reminder before course/examination registration ends</h3>
+            <label for="toggle-auto-course-and-examination-reminder">Toggle course/examination reminder before Registration ends</label>
+          </div>
+          <input type="checkbox" name="toggle-auto-course-and-examination-reminder" id="toggle-auto-course-and-examination-reminder" />
+        </div>
+
+        <div class="early-registration-reminder-setting-wrapper">
+          <h3>How early before registration ends do you want to be reminded?</h3>
+          <label for="days-ammount">Ammount of Days before Registration Ends:</label>
+          <select id="days-ammount" name="days-ammount">
+            <option value="1">1 Days</option>
+            <option value="2">2 Days</option>
+            <option value="3">3 Days</option>
+            <option value="4">4 Days</option>
+            <option value="5">5 Days</option>
+            <option value="6">6 Days</option>
+            <option value="7">7 Days</option>
+            <option value="-1">Maximum (Registration start date)</option>
+          </select>
+          <p>(Discord required for reminder settings)</p>
+          <div class="inline-actions">
+            <button id="save-changes-btn" class="btn-primary" type="button"><i class="bi bi-save2" aria-hidden="true"></i><span>Save Changes</span></button>
+            <span id="settings-unsaved" class="unsaved-indicator" hidden><i class="bi bi-exclamation-circle" aria-hidden="true"></i><span>Unsaved changes</span></span>
+          </div>
+          <p class="save-feedback-paragraf"></p>
+        </div>
+
+        <div class="discord-setting-wrapper">
+          <h3>Discord Account Link</h3>
+          <p id="discord-account-id">Discord id:</p>
+          <p id="discord-account-link-status">Discord Linked: Null</p>
+          <button id="change-discord-account-btn" type="button"><i class="bi bi-discord" aria-hidden="true"></i><span>Link new discord account</span></button>
+        </div>
+
+        <div class="account-deletion-zone-wrapper">
+          <h3><i class="bi bi-exclamation-octagon" aria-hidden="true"></i><span>DangerZone</span></h3>
+          <button type="button" class="btn-danger"><i class="bi bi-trash3" aria-hidden="true"></i><span>Delete your LadokAuto account</span></button>
+          <p>Warning! This action will result in an irreversible operation.</p>
+          <p>You can always comeback and create an account but your settings will be removed</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Ladok Auto</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+  <script src="site-ui.js"></script>
 </body>
-
 </html>

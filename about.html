@@ -1,37 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>LadokAuto</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LadokAuto</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
-<body data-page="settings">
-    <header>
-        <h1>Welcome to Ladok Auto!</h1>
-    </header>
+<body data-page="about">
+  <header>
+    <div class="container">
+      <h1>Welcome to Ladok Auto!</h1>
+    </div>
+  </header>
 
-    <nav>
-        <a href="/">LadokAuto</a>
+  <nav>
+    <div class="container">
+      <div class="brand">
+        <a class="brand-link" href="./dashboard.html" aria-label="Go to dashboard">
+          <span class="logo-slot" aria-hidden="true"></span>
+          <span class="brand-name">LadokAuto</span>
+        </a>
+      </div>
+
+<div class="nav-links" id="primary-nav">
         <ul>
-            <li><a href="./dashboard.html">Dashboard</a></li>
-            <li><a href="./settings.html">Settings</a></li>
-            <li><a href="./about.html">About</a></li>
-            <li><button onclick="signOut()">Sign Out</button></li>
+          <li><a class="navlink" href="./dashboard.html"><i class="bi bi-speedometer2" aria-hidden="true"></i><span>Dashboard</span></a></li>
+          <li><a class="navlink" href="./settings.html"><i class="bi bi-gear" aria-hidden="true"></i><span>Settings</span></a></li>
+          <li><a class="navlink" href="./about.html"><i class="bi bi-info-circle" aria-hidden="true"></i><span>About</span></a></li>
+          <li><button type="button" onclick="signOut()"><i class="bi bi-box-arrow-right" aria-hidden="true"></i><span>Sign Out</span></button></li>
         </ul>
-    </nav>
+      </div>
+    </div>
+  </nav>
+  <main>
+    <div class="container">
+      <div class="card page-card">
+        <div class="page-header">
+          <h1>About</h1>
+        </div>
 
-    <main>
-      <p>write something here</p>
-    </main>
+        <div class="f        <div class="tabbar" role="tablist" aria-label="About sections">
+          <button type="button" class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="tab-faq" id="tabbtn-faq">FAQ</button>
+          <button type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-liability" id="tabbtn-liability">Liability</button>
+        </div>
 
-    <footer>
-        <p>&copy; 2026 Ladok Auto</p>
-    </footer>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="app.js"></script>
+        <section id="tab-faq" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-faq">
+          <h2 class="sr-only">FAQ</h2>
+        <div class="faq">
+          <div class="faq-item">
+            <p class="faq-q">Q:  What service does Ladok Auto provide?</p>
+            <p class="faq-a">A:  Ladok Auto provides its users free access to a service of reminders and auto-registration from courses and exams that are in Ladok.</p>
+          </div>
+          <div class="faq-item">
+            <p class="faq-q">Q:  Is Ladok Auto secure?</p>
+            <p class="faq-a">A:  Yes. Ladok Auto is designed with high standards for data security. Your password and username is encrypted on our server to keep your account safe. It is worth mentioning that no service can fully guarantee absolute security. If you suspect anything malicious is happening, you can always delete your Ladok Auto account from the settings menu and change your MDU password.</p>
+          </div>
+          <div class="faq-item">
+            <p class="faq-q">Q:  Is Ladok Auto part of Ladok?</p>
+            <p class="faq-a">A:  No. Ladok Auto is an independent, non-profitable organizationwith a goal of making the study period less stressful for students.</p>
+          </div>
+          <div class="faq-item">
+            <p class="faq-q">Q:  Why doesn't Ladok have an official way of auto-registering or sending reminders for courses?</p>
+            <p class="faq-a">A:  We don't know either which is why Ladok Auto was decided to be developed.</p>
+          </div>
+          <div class="faq-item">
+            <p class="faq-q">Q:  Why does Ladok Auto use discord as a reminders platform?</p>
+            <p class="faq-a">A:  We use discord for reminders because of its wide user-base and to be able to keep the service free of charge. Discord doesn't charge any fees for servers and direct messages. An SMS or e-mail service would have significantly increased the upkeep cost of Ladok Auto, making it unsustainable to upkeep without it affecting our users.</p>
+          </div>
+          <div class="faq-item">
+            <p class="faq-q">Q:  What is the history of Ladok Auto and how did it emerge?</p>
+            <p class="faq-a">A:  It all began when two students from Mälardalen University in Västerås was feeling high stress because of Ladoks awful registration system. At one instance, one of the students even missed an examination because of Ladoks system. This is when Ladok Auto was beginning to be developed (Early 2026).</p>
+          </div>
+        </div>
+        </section>
+
+        <section id="tab-liability" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-liability" hidden>
+          <h2 class="sr-only">Liability</h2>
+          <div class="faq">
+            <div class="faq-item">
+              <p class="faq-q">Liability</p>
+              <p class="faq-a"><!-- Edit this text later -->
+                Ladok Auto is provided “as is” without warranties of any kind. Ladok Auto is not responsible for missed registrations, deadlines, data loss, or any damages resulting from use of the service. You are responsible for verifying your registrations and deadlines in Ladok.
+              </p>
+            </div>
+            <div class="faq-item">
+              <p class="faq-q">Not affiliated</p>
+              <p class="faq-a"><!-- Edit this text later -->
+                Ladok Auto is not affiliated with Ladok or Mälardalen University. Any trademarks belong to their respective owners.
+              </p>
+            </div>
+          </div>
+        </section>
+v>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 Ladok Auto</p>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
+  <script src="site-ui.js"></script>
+
+  <script>
+    (function () {
+      const faqBtn = document.getElementById("tabbtn-faq");
+      const liabilityBtn = document.getElementById("tabbtn-liability");
+      const faqPanel = document.getElementById("tab-faq");
+      const liabilityPanel = document.getElementById("tab-liability");
+      if (!faqBtn || !liabilityBtn || !faqPanel || !liabilityPanel) return;
+
+      function setActive(which) {
+        const isFaq = which === "faq";
+        faqBtn.classList.toggle("is-active", isFaq);
+        liabilityBtn.classList.toggle("is-active", !isFaq);
+
+        faqBtn.setAttribute("aria-selected", isFaq ? "true" : "false");
+        liabilityBtn.setAttribute("aria-selected", !isFaq ? "true" : "false");
+
+        faqPanel.hidden = !isFaq;
+        liabilityPanel.hidden = isFaq;
+      }
+
+      faqBtn.addEventListener("click", () => setActive("faq"));
+      liabilityBtn.addEventListener("click", () => setActive("liability"));
+
+      setActive("faq");
+    })();
+  </script>
+
 </body>
-
 </html>
