@@ -1,7 +1,7 @@
 // ---------- Config ----------
-const REGISTER_URL = "https://localhost:7167/Register"; // use relative/origin URL in production
-const SEND_VERIFICATION_CODE_URL = "https://localhost:7167/DiscordVerification/sendcode";
-const VERIFY_CODE_URL = "https://localhost:7167/DiscordVerification/verify";
+const REGISTER_URL = "https://actinographic-tod-frumentaceous.ngrok-free.dev/Register"; // use relative/origin URL in production
+const SEND_VERIFICATION_CODE_URL = "https://actinographic-tod-frumentaceous.ngrok-free.dev/DiscordVerification/sendcode";
+const VERIFY_CODE_URL = "https://actinographic-tod-frumentaceous.ngrok-free.dev/DiscordVerification/verify";
 // Ensure Supabase CDN is loaded
 if (!window.supabase) {
   console.error("Supabase CDN failed to load.");
