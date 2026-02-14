@@ -50,23 +50,33 @@
 
         <form class="Authentication-wrapper" id="auth-form" novalidate>
           <label for="input-email">MDU email:</label>
-          <input type="email" autocomplete="email" name="email" id="input-email" placeholder="ABC25001@student.mdu.se" required />
+          <input type="email" autocomplete="email" name="email" id="input-email" placeholder="Ex: ABC25001@student.mdu.se" required />
           <p class="authentication-format-error-email"></p>
 
-          <label for="input-password">Password:</label>
+          <label for="input-password">MDU password:</label>
           <input type="password" name="password" autocomplete="current-password" id="input-password" placeholder="Your password" minlength="4" required />
           <p class="authentication-format-error-password"></p>
 
-          <p>Please join the discord server before signing up: <a target="_blank" href="https://discord.gg/67vRaEtJhD" class="link-button link-discord"><i class="bi bi-discord" aria-hidden="true"></i><span>Join Server</span></a></p>
-          <label for="discord-username-input">Discord username(Not Display Name):</label>
-          <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
-          <button id="send-code-btn" type="button"><i class="bi bi-send" aria-hidden="true"></i><span>Send Code</span></button>
-          <p class="authentication-format-error-discordid"></p>
+          <div class="form-section form-section--discord">
+            <p>Please join the discord server before signing up: <a target="_blank" href="https://discord.gg/Hmu6hnaksv" class="link-button link-discord"><i class="bi bi-discord" aria-hidden="true"></i><span>Join Server</span></a></p>
+            <label for="discord-username-input">Discord username (Not Display Name):</label>
+            <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
+            <button id="send-code-btn" type="button"><i class="bi bi-send" aria-hidden="true"></i><span>Send Code</span></button>
+            <p class="authentication-format-error-discordid"></p>
 
-          <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
-          <input type="text" name="discord-username" id="discord-verfication-code-input" placeholder="Ex: W8ed2" />
-          <button id="verify-code-btn" type="button"><i class="bi bi-shield-check" aria-hidden="true"></i><span>Verify Code</span></button>
-          <p class="authentication-format-error-discordid-verfication"></p>
+            <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
+            <input type="text" name="discord-username" id="discord-verfication-code-input" placeholder="Ex: W8ed2" />
+            <button id="verify-code-btn" type="button"><i class="bi bi-shield-check" aria-hidden="true"></i><span>Verify Code</span></button>
+            <p class="authentication-format-error-discordid-verfication"></p>
+          </div>
+
+          <div class="form-section form-section--liability">
+            <label class="checkbox-row" for="liability-accept">
+              <input type="checkbox" id="liability-accept" required />
+              <span>I have read the <a class="inline-link" href="./about.html#liability">Liability</a> and I agree to follow Ladok policy. Any login attempt Ladok Auto performs is my responsibility.</span>
+            </label>
+            <p class="authentication-format-error-liability"></p>
+          </div>
 
           <p>Please be patient registration takes long time (Est. 30 seconds)</p>
           <button id="submit-btn" class="btn-primary" type="submit"><i class="bi bi-person-check" aria-hidden="true"></i><span>Sign Up</span></button>

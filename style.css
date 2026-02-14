@@ -156,6 +156,24 @@ nav .container{
   outline-offset: 2px;
 }
 
+/* Signed-in indicator (injected via site-ui.js) */
+.nav-links .nav-user{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.78);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+.nav-links .nav-user .nav-username{
+  color: rgba(255,255,255,0.92);
+  font-weight: 650;
+}
+
 /* --- Main layout --- */
 main .container{
   padding: 18px 0 24px;
@@ -312,6 +330,17 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration{
   -webkit-appearance: none;
   appearance: none;
+  display: none;
+}
+
+/* Firefox / old Edge equivalents */
+input[type="search"]::-moz-search-clear{
+  display: none;
+}
+input[type="search"]::-moz-search-cancel-button{
+  display: none;
+}
+input[type="search"]::-ms-clear{
   display: none;
 }
 
@@ -495,6 +524,10 @@ input.master-toggle{
 input[type="checkbox"]{
   -webkit-tap-highlight-color: transparent;
 
+  /* Prevent flex layouts from shrinking toggles on small screens */
+  flex: 0 0 auto;
+  flex-shrink: 0;
+
   /* Sizing (override with CSS variables per context) */
   --toggle-w: 44px;
   --toggle-h: 26px;
@@ -502,6 +535,7 @@ input[type="checkbox"]{
   --toggle-knob: 18px;
 
   width: var(--toggle-w);
+  min-width: var(--toggle-w);
   height: var(--toggle-h);
   appearance: none;
   -webkit-appearance: none;
@@ -582,6 +616,23 @@ input[type="checkbox"]:disabled{
 }
 .discord-setting-wrapper button{ width: 100%; justify-content:center; }
 
+.discord-setting-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.discord-link-panel{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.discord-link-panel p{ margin: 0; }
+.discord-link-panel button{ width: 100%; }
+
 /* Danger Zone like GitHub */
 .account-deletion-zone-wrapper{
   margin-top: 14px;
@@ -611,6 +662,45 @@ input[type="checkbox"]:disabled{
 .Authentication-wrapper p{
   margin: 4px 0 0;
 }
+
+/* Signup: small section separation (Discord / Liability consent) */
+.form-section{
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.10);
+}
+.checkbox-row{
+  display:flex;
+  align-items:flex-start;
+  gap: 12px;
+  line-height: 1.35;
+}
+.checkbox-row input[type="checkbox"]{
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  margin-top: 2px;
+
+  /* Consent checkbox should be a true checkbox (not a toggle) */
+  appearance: auto;
+  -webkit-appearance: auto;
+  accent-color: var(--accent);
+  background: transparent;
+  border: none;
+}
+.checkbox-row input[type="checkbox"]::after{
+  content: none;
+}
+.inline-link{ color: var(--accent); text-decoration: underline; }
+
+/* Signup: add spacing inside Discord section */
+.form-section--discord{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.form-section--discord p{ margin: 0; }
 .authentication-feedback-message{
   min-height: 22px;
 }
@@ -618,6 +708,7 @@ input[type="checkbox"]:disabled{
 .authentication-format-error-password,
 .authentication-format-error-discordid,
 .authentication-format-error-discordid-verfication,
+.authentication-format-error-liability,
 .error-paragraf{
   color: rgba(255,77,79,0.95);
   margin: 0;
@@ -625,6 +716,27 @@ input[type="checkbox"]:disabled{
 }
 
 /* --- About / FAQ --- */
+.tabbar{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+.tab-btn{
+  padding: 12px 16px;
+}
+
+.tab-btn.is-active{
+  background: linear-gradient(135deg, rgba(73,246,184,0.90), rgba(27,211,154,0.75));
+  color: var(--accent-ink);
+  border-color: rgba(255,255,255,0.10);
+  font-weight: 650;
+}
+.tab-btn.is-active:hover{
+  filter: brightness(1.03);
+}
+.tab-panel{ margin-top: 8px; }
+
 .faq{
   display:flex;
   flex-direction: column;
@@ -762,6 +874,31 @@ footer p{
   color: rgba(255,255,255,0.74);
   font-family: var(--mono);
   font-size: 12px;
+}
+
+/* Mobile-only bulk toggles (Dashboard) */
+.bulk-toggles{
+  display:none;
+  margin-top: 10px;
+  gap: 10px;
+}
+.bulk-toggle{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+.bulk-toggle label{
+  margin: 0;
+  color: rgba(255,255,255,0.80);
+  font-size: 13px;
+}
+@media (max-width: 760px){
+  .bulk-toggles{ display:flex; flex-direction: column; }
 }
 
 /* Alternating row tint for readability */

@@ -64,19 +64,34 @@
             <option value="7">7 Days</option>
             <option value="-1">Maximum (Registration start date)</option>
           </select>
-          <p>(Discord required for reminder settings)</p>
           <div class="inline-actions">
-            <button id="save-changes-btn" class="btn-primary" type="button"><i class="bi bi-save2" aria-hidden="true"></i><span>Save Changes</span></button>
+            <button id="save-changes-btn" class="btn" type="button" disabled><i class="bi bi-save2" aria-hidden="true"></i><span>Save Changes</span></button>
             <span id="settings-unsaved" class="unsaved-indicator" hidden><i class="bi bi-exclamation-circle" aria-hidden="true"></i><span>Unsaved changes</span></span>
           </div>
           <p class="save-feedback-paragraf"></p>
         </div>
 
         <div class="discord-setting-wrapper">
-          <h3>Discord Account Link</h3>
+          <div class="discord-setting-head">
+            <h3>Discord Account Link</h3>
+            <span id="discord-status-pill" class="status-badge is-no">Not linked</span>
+          </div>
           <p id="discord-account-id">Discord id:</p>
-          <p id="discord-account-link-status">Discord Linked: Null</p>
           <button id="change-discord-account-btn" type="button"><i class="bi bi-discord" aria-hidden="true"></i><span>Link new discord account</span></button>
+
+          <div id="discord-link-panel" class="discord-link-panel" hidden>
+            <p>Please join the discord server before linking: <a target="_blank" href="https://discord.gg/Hmu6hnaksv">Join Server</a></p>
+
+            <label for="settings-discord-username-input">Discord username (Not Display Name):</label>
+            <input type="text" name="discord-username" id="settings-discord-username-input" placeholder="Ex: username" />
+            <button id="settings-send-code-btn" type="button">Send Code</button>
+            <p class="authentication-format-error-discordid" id="settings-discord-send-feedback"></p>
+
+            <label for="settings-discord-verfication-code-input">Discord verification code (lasts 5 min):</label>
+            <input type="text" name="discord-verfication-code" id="settings-discord-verfication-code-input" placeholder="Ex: K4zz3R" />
+            <button id="settings-verify-code-btn" type="button">Verify Code</button>
+            <p class="authentication-format-error-discordid-verfication" id="settings-discord-verify-feedback"></p>
+          </div>
         </div>
 
         <div class="account-deletion-zone-wrapper">

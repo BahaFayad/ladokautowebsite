@@ -8,11 +8,13 @@
   function $all(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
 
   function addMasterToggleClasses() {
-    const ids = [
-      "#toggle-all-courses-reminder",
-      "#toggle-all-courses-auto-registration",
-      "#toggle-auto-examination-registration"
-    ];
+	    const ids = [
+	      "#toggle-all-courses-reminder",
+	      "#toggle-all-courses-auto-registration",
+	      "#toggle-all-courses-reminder-mobile",
+	      "#toggle-all-courses-auto-registration-mobile",
+	      "#toggle-auto-examination-registration"
+	    ];
     ids.forEach((sel) => {
       const el = document.querySelector(sel);
       if (el) el.classList.add("master-toggle");
@@ -128,8 +130,10 @@
   }
 
   function syncToggleAllStates(unregTbody) {
-    const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
-    const toggleAllAuto = document.querySelector("#toggle-all-courses-auto-registration");
+	    const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
+	    const toggleAllAuto = document.querySelector("#toggle-all-courses-auto-registration");
+	    const toggleAllRemindersMobile = document.querySelector("#toggle-all-courses-reminder-mobile");
+	    const toggleAllAutoMobile = document.querySelector("#toggle-all-courses-auto-registration-mobile");
 
     const reminderCbs = $all("input.course-reminder", unregTbody).filter(cb => !cb.disabled);
     const autoCbs = $all("input.course-auto", unregTbody).filter(cb => !cb.disabled);
@@ -154,8 +158,10 @@
       }
     }
 
-    applyMaster(toggleAllReminders, reminderCbs);
-    applyMaster(toggleAllAuto, autoCbs);
+	    applyMaster(toggleAllReminders, reminderCbs);
+	    applyMaster(toggleAllRemindersMobile, reminderCbs);
+	    applyMaster(toggleAllAuto, autoCbs);
+	    applyMaster(toggleAllAutoMobile, autoCbs);
   }
 
   async function getDiscordLinkedStatus() {
@@ -182,15 +188,18 @@
   function applyDiscordGate(unregTbody, linked) {
     const banner = document.getElementById("discord-not-linked-banner");
     const reminderToggles = $all("input.course-reminder", unregTbody);
-    const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
+	    const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
+	    const toggleAllRemindersMobile = document.querySelector("#toggle-all-courses-reminder-mobile");
 
     if (!linked) {
       if (banner) banner.hidden = false;
-      if (toggleAllReminders) toggleAllReminders.disabled = true;
+	      if (toggleAllReminders) toggleAllReminders.disabled = true;
+	      if (toggleAllRemindersMobile) toggleAllRemindersMobile.disabled = true;
       reminderToggles.forEach(cb => { cb.disabled = true; cb.closest("tr")?.classList.add("discord-locked"); });
     } else {
       if (banner) banner.hidden = true;
-      if (toggleAllReminders) toggleAllReminders.disabled = false;
+	      if (toggleAllReminders) toggleAllReminders.disabled = false;
+	      if (toggleAllRemindersMobile) toggleAllRemindersMobile.disabled = false;
       reminderToggles.forEach(cb => { cb.disabled = false; cb.closest("tr")?.classList.remove("discord-locked"); });
     }
   }
@@ -217,8 +226,10 @@
       });
     }
 
-    if (toggleAllReminders) toggleAllReminders.addEventListener("change", refreshAfterToggleAll);
-    if (toggleAllAuto) toggleAllAuto.addEventListener("change", refreshAfterToggleAll);
+	    if (toggleAllReminders) toggleAllReminders.addEventListener("change", refreshAfterToggleAll);
+	    if (toggleAllAuto) toggleAllAuto.addEventListener("change", refreshAfterToggleAll);
+	    if (toggleAllRemindersMobile) toggleAllRemindersMobile.addEventListener("change", refreshAfterToggleAll);
+	    if (toggleAllAutoMobile) toggleAllAutoMobile.addEventListener("change", refreshAfterToggleAll);
   }
 
   async function onReady() {
@@ -236,15 +247,16 @@
     syncToggleAllStates(unregTbody);
 
     let discordLinked = null;
-    try {
-      const status = await getDiscordLinkedStatus();
-      if (status.ok) {
-        discordLinked = status.linked;
-        applyDiscordGate(unregTbody, status.linked);
-      }
-    } catch {}
 
-    const observers = [];
+    function refreshUI() {
+      decorateTbody(unregTbody, ["Courses", "Registration start", "Registration end", "Reminder", "Auto-Registration"]);
+      if (regTbody) decorateTbody(regTbody, ["Courses", "Registration start", "Registration end"]);
+      if (applyFilter) applyFilter();
+      if (discordLinked !== null) applyDiscordGate(unregTbody, discordLinked);
+      syncToggleAllStates(unregTbody);
+    }
+
+    // Observe row insertions/updates so counts always reflect loaded data
     function observe(tbody, labels) {
       if (!tbody) return;
       const mo = new MutationObserver(function () {
@@ -254,11 +266,27 @@
         if (tbody === unregTbody) syncToggleAllStates(unregTbody);
       });
       mo.observe(tbody, { childList: true, subtree: false });
-      observers.push(mo);
     }
 
     observe(unregTbody, ["Courses", "Registration start", "Registration end", "Reminder", "Auto-Registration"]);
     observe(regTbody, ["Courses", "Registration start", "Registration end"]);
+
+    // Signal from app.js after async render finishes
+    document.addEventListener("ladokauto:courses-rendered", refreshUI);
+
+    // Also run once now in case rows are already present
+    refreshUI();
+
+    try {
+      const status = await getDiscordLinkedStatus();
+      if (status.ok) {
+        discordLinked = status.linked;
+        applyDiscordGate(unregTbody, status.linked);
+      }
+    } catch {}
+
+    // If we learned Discord status after render, re-apply to course reminder toggles
+    refreshUI();
   }
 
   if (document.readyState === "loading") {

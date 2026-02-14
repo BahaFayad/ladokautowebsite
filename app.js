@@ -40,6 +40,14 @@ function escapeHtml(str) {
     .replace(/'/g, "&#39;");
 }
 
+function formatDateOnly(value) {
+  if (value == null) return "";
+  const s = String(value);
+  const head = s.split("T")[0].split(" ")[0];
+  const m = head.match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : head;
+}
+
 async function safeReadJson(response) {
   const raw = await response.text();
   if (!raw) return { ok: response.ok, data: null, raw: "" };
@@ -116,6 +124,15 @@ async function handleSignupSubmit(e, elements) {
   setText(emailErrorEl, "");
   setText(passwordErrorEl, "");
   setText(feedbackEl, "");
+
+  // Liability consent (required)
+  const liabilityCb = document.getElementById("liability-accept");
+  const liabilityErrEl = document.querySelector(".authentication-format-error-liability");
+  setText(liabilityErrEl, "");
+  if (liabilityCb && !liabilityCb.checked) {
+    setText(liabilityErrEl, "You must accept the Liability terms to sign up.");
+    return;
+  }
 
   if (!isValidMduStudentEmail(email)) {
     setText(emailErrorEl, "Email is incorrectly formatted!");
@@ -386,8 +403,8 @@ async function loadDashboard() {
     const registered = isCourseRegistered(course);
 
     const name = escapeHtml(course.Name);
-    const start = escapeHtml(course.RegistrationStart);
-    const end = escapeHtml(course.RegistrationEnd);
+    const start = escapeHtml(formatDateOnly(course.RegistrationStart));
+    const end = escapeHtml(formatDateOnly(course.RegistrationEnd));
 
     if (!registered) {
       const checkedNotification = course.NotificationOn ? "checked" : "";
@@ -418,30 +435,52 @@ async function loadDashboard() {
     }
   });
 
-  // ---------- Toggle ALL reminders (unregistered only) ----------
-  const toggleAllReminders = document.querySelector("#toggle-all-courses-reminder");
-  if (toggleAllReminders) {
-    toggleAllReminders.onchange = (e) => {
-      unregBody
-        .querySelectorAll(".course-reminder")
-        .forEach(cb => cb.checked = e.target.checked);
+  // Notify UI helpers (dashboard-ui.js) that rows are rendered
+  try {
+    document.dispatchEvent(new CustomEvent("ladokauto:courses-rendered"));
+  } catch (_) {
+    // ignore
+  }
+
+  // ---------- Toggle ALL reminders / auto-registrations (unregistered only) ----------
+  const toggleAllRemindersDesktop = document.querySelector("#toggle-all-courses-reminder");
+  const toggleAllAutoDesktop = document.querySelector("#toggle-all-courses-auto-registration");
+  const toggleAllRemindersMobile = document.querySelector("#toggle-all-courses-reminder-mobile");
+  const toggleAllAutoMobile = document.querySelector("#toggle-all-courses-auto-registration-mobile");
+
+  function syncMasterToggles(which, checked, sourceEl) {
+    if (which === "reminder") {
+      if (toggleAllRemindersDesktop && sourceEl !== toggleAllRemindersDesktop) toggleAllRemindersDesktop.checked = checked;
+      if (toggleAllRemindersMobile && sourceEl !== toggleAllRemindersMobile) toggleAllRemindersMobile.checked = checked;
+    }
+    if (which === "auto") {
+      if (toggleAllAutoDesktop && sourceEl !== toggleAllAutoDesktop) toggleAllAutoDesktop.checked = checked;
+      if (toggleAllAutoMobile && sourceEl !== toggleAllAutoMobile) toggleAllAutoMobile.checked = checked;
+    }
+  }
+
+  function bindMasterToggle(el, which) {
+    if (!el) return;
+    el.onchange = (e) => {
+      const checked = !!e.target.checked;
+      if (which === "reminder") {
+        unregBody.querySelectorAll(".course-reminder").forEach(cb => cb.checked = checked);
+      } else {
+        unregBody.querySelectorAll(".course-auto").forEach(cb => cb.checked = checked);
+      }
+      syncMasterToggles(which, checked, el);
       updateDashboardDirtyState();
     };
   }
 
-  // ---------- Toggle ALL auto-registrations (unregistered only) ----------
-  const toggleAllAuto = document.querySelector("#toggle-all-courses-auto-registration");
-  if (toggleAllAuto) {
-    toggleAllAuto.onchange = (e) => {
-      unregBody
-        .querySelectorAll(".course-auto")
-        .forEach(cb => cb.checked = e.target.checked);
-      updateDashboardDirtyState();
-    };
-  }
+  bindMasterToggle(toggleAllRemindersDesktop, "reminder");
+  bindMasterToggle(toggleAllRemindersMobile, "reminder");
+  bindMasterToggle(toggleAllAutoDesktop, "auto");
+  bindMasterToggle(toggleAllAutoMobile, "auto");
 
   // ---------- Unsaved changes guard (Dashboard) ----------
   const unsavedEl = document.querySelector("#dashboard-unsaved");
+  const saveBtnEl = document.querySelector("#save-courses-settings-changes");
   let baseline = null;
 
   function captureDashboardBaseline() {
@@ -478,6 +517,10 @@ async function loadDashboard() {
 
   function setDashboardDirtyUI(isDirty) {
     if (unsavedEl) unsavedEl.hidden = !isDirty;
+    if (saveBtnEl) {
+      saveBtnEl.disabled = !isDirty;
+      saveBtnEl.classList.toggle("btn-primary", isDirty);
+    }
   }
 
   function updateDashboardDirtyState() {
@@ -579,6 +622,8 @@ async function loadSettings() {
   );
   const amountDaysReminderInputEl =
     document.querySelector("#days-ammount");
+  const saveChangesBtnEl =
+    document.querySelector("#save-changes-btn");
 
   autoReminderInputEl.checked =
     userData.early_registration_reminders_on;
@@ -611,7 +656,12 @@ async function loadSettings() {
   }
 
   function updateSettingsDirtyUI() {
-    if (settingsUnsavedEl) settingsUnsavedEl.hidden = !computeSettingsDirty();
+    const dirty = computeSettingsDirty();
+    if (settingsUnsavedEl) settingsUnsavedEl.hidden = !dirty;
+    if (saveChangesBtnEl) {
+      saveChangesBtnEl.disabled = !dirty;
+      saveChangesBtnEl.classList.toggle("btn-primary", dirty);
+    }
   }
 
   captureSettingsBaseline();
@@ -629,8 +679,6 @@ async function loadSettings() {
     });
   }
   // ===== UPDATE SETTINGS =====
-  const saveChangesBtnEl =
-    document.querySelector("#save-changes-btn");
 
   saveChangesBtnEl.addEventListener("click", async () => {
     const daysValue =
@@ -657,102 +705,102 @@ async function loadSettings() {
       if (typeof updateSettingsDirtyUI === "function") updateSettingsDirtyUI();
     }
   });
-  const { data, error } = await supabaseClient
-    .from('discord_readonly_table')
-    .select('*')
-    .single(); // fetch entire row
+  // ===== Discord link UI =====
+  const discordIdEl = document.querySelector("#discord-account-id");
+  const discordPillEl = document.querySelector("#discord-status-pill");
+  const discordPanelEl = document.querySelector("#discord-link-panel");
+  const openDiscordPanelBtn = document.querySelector("#change-discord-account-btn");
 
-  if (error) {
-    console.error("Error fetching Discord data:", error);
-    return;
-  }
-  const discordIdEl = document.querySelector("#discord-account-id")
-  if (data.discord_client_id != null) {
-    discordIdEl.textContent = `Discord id: ${data.discord_client_id}`
-  }
-  const discordLinkStatusEl = document.querySelector("#discord-account-link-status")
-  if (data.discord_client_id != null) {
-    discordLinkStatusEl.textContent = `Discord Linked: ${data.discord_linked}`
-  }
-  const linkDiscordAccountBtn = document.querySelector("#change-discord-account-btn").addEventListener("click", async () => {
-    const discordSettingsWrapper = document.querySelector(".discord-setting-wrapper")
-    discordSettingsWrapper.innerHTML += `<p>Please join the discord server before signing up: <a target="_blank"
-                href="https://discord.gg/67vRaEtJhD">Join Server</a></p>
-                <label for="discord-username-input">Discord username(Not Display Name):</label>
-                <input type="text" name="discord-username" id="discord-username-input" placeholder="Ex: username" />
-                <button id="send-code-btn" type="button">Send Code</button>
-                <p class="authentication-format-error-discordid"></p>
+  const discordUsernameInput = document.querySelector("#settings-discord-username-input");
+  const discordCodeInput = document.querySelector("#settings-discord-verfication-code-input");
+  const sendCodeBtn = document.querySelector("#settings-send-code-btn");
+  const verifyCodeBtn = document.querySelector("#settings-verify-code-btn");
+  const sendFeedbackEl = document.querySelector("#settings-discord-send-feedback");
+  const verifyFeedbackEl = document.querySelector("#settings-discord-verify-feedback");
 
-                <label for="discord-verfication-code-input">Discord verfication code(lasts 5 min):</label>
-                <input type="text" name="discord-username" id="discord-verfication-code-input"
-                    placeholder="Ex: W8ed2" />
-                <button id="verify-code-btn" type="button">Verify Code</button>
-                <p class="authentication-format-error-discordid-verfication"></p>`
-    const feedbackParagraph = document.querySelector(".authentication-format-error-discordid-verfication");
-    const discordUsernameInput = document.querySelector("#discord-username-input");
-    const discordCodeInput = document.querySelector("#discord-verfication-code-input");
+  async function refreshDiscordStatus() {
+    if (!discordIdEl || !discordPillEl) return;
 
-    const sendCodeBtn = document.querySelector("#send-code-btn");
+    const { data, error } = await supabaseClient
+      .from("discord_readonly_table")
+      .select("*")
+      .single();
+
+    if (error) {
+      console.error("Error fetching Discord data:", error);
+      return;
+    }
+
+    const id = data?.discord_client_id;
+    const linked = Boolean(data?.discord_linked);
+
+    discordIdEl.textContent = id ? `Discord id: ${id}` : "Discord id: Not linked";
+    discordPillEl.textContent = linked ? "Linked" : "Not linked";
+    discordPillEl.classList.toggle("is-yes", linked);
+    discordPillEl.classList.toggle("is-no", !linked);
+  }
+
+  await refreshDiscordStatus();
+
+  if (openDiscordPanelBtn && discordPanelEl) {
+    openDiscordPanelBtn.addEventListener("click", () => {
+      discordPanelEl.hidden = !discordPanelEl.hidden;
+      if (sendFeedbackEl) sendFeedbackEl.textContent = "";
+      if (verifyFeedbackEl) verifyFeedbackEl.textContent = "";
+    });
+  }
+
+  if (sendCodeBtn) {
     sendCodeBtn.addEventListener("click", async () => {
+      if (sendFeedbackEl) sendFeedbackEl.textContent = "";
+      if (verifyFeedbackEl) verifyFeedbackEl.textContent = "";
+
       const { data: { session }, error } = await supabaseClient.auth.getSession();
-      if (error) {
-        console.error(error);
-        feedbackParagraph.textContent = "Error getting session!";
+      if (error || !session?.access_token) {
+        if (sendFeedbackEl) sendFeedbackEl.textContent = "Please login to link Discord!";
         return;
       }
 
-      const jwt = session?.access_token;
-      if (!jwt) {
-        feedbackParagraph.textContent = "Please login to link Discord!";
-        return;
-      }
-
-      const discordUsername = discordUsernameInput.value.trim();
+      const discordUsername = String(discordUsernameInput?.value || "").trim();
       if (!discordUsername) {
-        feedbackParagraph.textContent = "Discord username can't be empty!";
+        if (sendFeedbackEl) sendFeedbackEl.textContent = "Discord username can't be empty!";
         return;
       }
 
-      feedbackParagraph.textContent = "Sending verification code...";
+      if (sendFeedbackEl) sendFeedbackEl.textContent = "Sending verification code...";
 
       try {
         const res = await fetch(SEND_VERIFICATION_CODE_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ JWT: jwt, DiscordUsername: discordUsername })
+          body: JSON.stringify({ JWT: session.access_token, DiscordUsername: discordUsername })
         });
-
         const data = await res.json();
-        feedbackParagraph.textContent = data.message || "No message returned";
-
+        if (sendFeedbackEl) sendFeedbackEl.textContent = data.message || "No message returned";
       } catch (err) {
-        feedbackParagraph.textContent = "Failed to send code: " + err.message;
+        if (sendFeedbackEl) sendFeedbackEl.textContent = "Failed to send code: " + err.message;
       }
     });
+  }
 
-    const verifyCodeBtn = document.querySelector("#verify-code-btn");
+  if (verifyCodeBtn) {
     verifyCodeBtn.addEventListener("click", async () => {
+      if (verifyFeedbackEl) verifyFeedbackEl.textContent = "";
+
       const { data: { session }, error } = await supabaseClient.auth.getSession();
-      if (error) {
-        console.error(error);
-        feedbackParagraph.textContent = "Error getting session!";
+      if (error || !session?.access_token) {
+        if (verifyFeedbackEl) verifyFeedbackEl.textContent = "Please login to link Discord!";
         return;
       }
 
-      const jwt = session?.access_token;
-      if (!jwt) {
-        feedbackParagraph.textContent = "Please login to link Discord!";
-        return;
-      }
-
-      const discordUsername = discordUsernameInput.value.trim();
-      const code = discordCodeInput.value.trim();
+      const discordUsername = String(discordUsernameInput?.value || "").trim();
+      const code = String(discordCodeInput?.value || "").trim();
       if (!code) {
-        feedbackParagraph.textContent = "Verification code can't be empty!";
+        if (verifyFeedbackEl) verifyFeedbackEl.textContent = "Verification code can't be empty!";
         return;
       }
 
-      feedbackParagraph.textContent = "Verifying code...";
+      if (verifyFeedbackEl) verifyFeedbackEl.textContent = "Verifying code...";
 
       try {
         const res = await fetch(VERIFY_CODE_URL, {
@@ -760,18 +808,15 @@ async function loadSettings() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ DiscordUsername: discordUsername, Code: code })
         });
-
         const data = await res.json();
-        feedbackParagraph.textContent = data.message || "No message returned";
-
+        if (verifyFeedbackEl) verifyFeedbackEl.textContent = data.message || "No message returned";
+        // If backend links the account, refresh the UI.
+        await refreshDiscordStatus();
       } catch (err) {
-        feedbackParagraph.textContent = "Failed to verify code: " + err.message;
+        if (verifyFeedbackEl) verifyFeedbackEl.textContent = "Failed to verify code: " + err.message;
       }
     });
-
-
-
-  })
+  }
 
 
 }
